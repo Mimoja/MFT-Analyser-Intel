@@ -4,6 +4,7 @@ github.com/Mimoja/MFT-Common v0.0.0-20191030110314-fb492a19ad43 h1:qBybBZO4y9e5h
 github.com/Mimoja/MFT-Common v0.0.0-20191030110314-fb492a19ad43/go.mod h1:bev0GFH7G0mjMQMzftP3oWU6cyw6ObRQv5itjfxzCMQ=
 github.com/Mimoja/MFT-Common v0.0.0-20191030115252-780819867130 h1:TCIIIYQ0p0hctN1OuL6AwGk2Fkw+W/9tym8SXhl+Iwc=
 github.com/Mimoja/MFT-Common v0.0.0-20191030115252-780819867130/go.mod h1:mx0kR2nu0iYng9ptKMDmLMWydLH1hn60gUmJYa9BuVo=
+github.com/Mimoja/MFT-Common v0.0.0-20191114081849-df980f4b1ff2 h1:WtSjCdgipkBVL+I49pLLg3WhORXs9/G1xprl0d9cqeg=
 github.com/Mimoja/MFT-Common v0.0.0-20191114081849-df980f4b1ff2/go.mod h1:mx0kR2nu0iYng9ptKMDmLMWydLH1hn60gUmJYa9BuVo=
 github.com/Mimoja/PSP-Entry-Types v0.0.0-20190620172056-b980f3fbafa7 h1:M9QDkfQ8oE94q0+odPUcw2u0F9cbTT7o9YStV2WragM=
 github.com/Mimoja/PSP-Entry-Types v0.0.0-20190620172056-b980f3fbafa7/go.mod h1:iZDm2Dh5T8SliuWA1nTbUfSAWTMWWn1fMVHR3CbkrpA=

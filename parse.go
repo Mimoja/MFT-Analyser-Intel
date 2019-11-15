@@ -99,7 +99,7 @@ func analyse(entry MFTCommon.FlashImage) error {
 		return err
 	}
 
-	return nil
+	return Bundle.MessageQueue.BiosImagesQueue.MarshalAndSend(entry)
 }
 
 func getRegionLimits(region MFTCommon.RegionSectionEntry) (int64, int64, error) {
