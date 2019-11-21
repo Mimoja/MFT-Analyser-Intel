@@ -6,6 +6,7 @@ import (
 	"context"
 	"encoding/hex"
 	"fmt"
+	"github.com/Mimoja/intelfit"
 	"io/ioutil"
 	"strconv"
 )
@@ -81,7 +82,15 @@ func analyse(entry MFTCommon.FlashImage) error {
 	}
 
 	entry.FirmwareOffset = start
-	entry.INTEL = &MFTCommon.IntelFirmware{IFD: &pfd}
+
+	// Parse FIT
+	fit, err := intelfit.ParseFIT(bts)
+	if err != nil {
+		Bundle.Log.WithField("entry", entry).
+			WithError(err).
+			Errorf("Cannot parse FIT: %v", err)
+	}
+	entry.INTEL = &MFTCommon.IntelFirmware{IFD: &pfd, FIT: fit}
 
 	//TODO handle ME
 
