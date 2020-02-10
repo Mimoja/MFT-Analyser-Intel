@@ -1,13 +1,16 @@
 package main
 
 import (
-	"github.com/Mimoja/MFT-Common"
 	"bytes"
 	"context"
 	"encoding/hex"
+	"encoding/json"
 	"fmt"
+	"github.com/Mimoja/MFT-Common"
 	"github.com/Mimoja/intelfit"
+	"github.com/mimoja/intelfsp"
 	"io/ioutil"
+	"os"
 	"strconv"
 )
 
@@ -90,7 +93,40 @@ func analyse(entry MFTCommon.FlashImage) error {
 			WithError(err).
 			Errorf("Cannot parse FIT: %v", err)
 	}
-	entry.INTEL = &MFTCommon.IntelFirmware{IFD: &pfd, FIT: fit}
+
+	//Workaround against 2^64 max values
+
+	for i, _ := range fit.Entries {
+		if fit.Entries[i].Address > 16777216*100 { // 1600MB must be engought for any flashimage for now
+			fit.Entries[i].Address = 0
+		}
+	}
+
+	// Parse FSP
+
+	fsp := intelfsp.FindAndParse(bts)
+	parsedFSP := []MFTCommon.IntelFSP{}
+	for _, f := range fsp {
+		Bundle.Log.WithField("entry", entry).
+			Info("Found FSP")
+		id := MFTCommon.GenerateID(f.Raw)
+		idString := id.GetID()
+
+		Bundle.Storage.StoreBytes(f.Raw, idString)
+
+		f.Raw = []byte{}
+		Bundle.DB.StoreElement("fsp", nil, f, &idString)
+
+		parsedFSP = append(parsedFSP, MFTCommon.IntelFSP{
+			IntelFSP: f,
+			ID:       id,
+		})
+	}
+
+	Bundle.Log.WithField("entry", entry).
+		Infof("Found %d FSP images", len(parsedFSP))
+
+	entry.INTEL = &MFTCommon.IntelFirmware{FSP: parsedFSP, FIT: fit}
 
 	//TODO handle ME
 
@@ -104,7 +140,12 @@ func analyse(entry MFTCommon.FlashImage) error {
 	if err != nil {
 		Bundle.Log.WithField("entry", entry).
 			WithError(err).
-			Errorf("Cannot update ifd: %v", err)
+			Errorf("Cannot update intel field: %v", err)
+		enc := json.NewEncoder(os.Stdout)
+		enc.SetIndent("ENC", " ")
+		fit.Entries = fit.Entries[1:]
+
+		enc.Encode(fit.Entries)
 		return err
 	}
 
