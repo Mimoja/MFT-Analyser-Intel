@@ -94,11 +94,12 @@ func analyse(entry MFTCommon.FlashImage) error {
 			Errorf("Cannot parse FIT: %v", err)
 	}
 
-	//Workaround against 2^64 max values
-
-	for i, _ := range fit.Entries {
-		if fit.Entries[i].Address > 16777216*100 { // 1600MB must be engought for any flashimage for now
-			fit.Entries[i].Address = 0
+	//Workaround for 2^64 max values
+	if fit != nil {
+		for i, _ := range fit.Entries {
+			if fit.Entries[i].Address > 16777216*100 { // 1600MB must be engought for any flashimage for now
+				fit.Entries[i].Address = 0
+			}
 		}
 	}
 
